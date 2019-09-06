@@ -1,0 +1,48 @@
+package com.tyrellplayz.zlib.block;
+
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+public abstract class ZBlock extends Block {
+
+    public ZBlock(Properties properties) {
+        super(properties);
+    }
+
+    @Override
+    public int getComparatorInputOverride(BlockState blockState, World worldIn, BlockPos pos) {
+        return Container.calcRedstone(worldIn.getTileEntity(pos));
+    }
+
+    @Override
+    public boolean hasComparatorInputOverride(BlockState state) {
+        return this.hasTileEntity(state);
+    }
+
+    @Override
+    public void onReplaced(BlockState state, World worldIn, BlockPos pos, BlockState newState, boolean isMoving) {
+        // Checks if the block is a completely different block.
+        if(state.getBlock() != newState.getBlock()) {
+            TileEntity tile = worldIn.getTileEntity(pos);
+            // If the tile has an Inventory, drop all contained items.
+            if(tile instanceof IInventory) {
+                InventoryHelper.dropInventoryItems(worldIn,pos,(IInventory)tile);
+                worldIn.updateComparatorOutputLevel(pos,this);
+            }
+        }
+        super.onReplaced(state,worldIn,pos,newState,isMoving);
+    }
+
+    @Override
+    public boolean eventReceived(BlockState state, World worldIn, BlockPos pos, int id, int param) {
+        super.eventReceived(state, worldIn, pos, id, param);
+        TileEntity tile = worldIn.getTileEntity(pos);
+        return tile != null && tile.receiveClientEvent(id,param);
+    }
+}
