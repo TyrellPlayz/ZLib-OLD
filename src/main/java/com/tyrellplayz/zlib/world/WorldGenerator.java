@@ -35,18 +35,14 @@ public class WorldGenerator {
         checkedBiomes.add(biome);
 
         for (Ore ore : ores) {
-            Collection<Ore.SpawnWorld> spawnWorlds = ore.getSpawnWorlds();
+            Ore.SpawnWorld spawnWorld = ore.getSpawnWorld();
 
-            if(spawnWorlds.contains(Ore.SpawnWorld.OVERWORLD)) {
-                if(biome.getCategory() != Biome.Category.NETHER || biome.getCategory() != Biome.Category.THEEND) addOre(biome, ore.getFillerBlockType(), ore);
-            }
-
-            if(spawnWorlds.contains(Ore.SpawnWorld.NETHER)) {
-                if(biome.getCategory() == Biome.Category.NETHER) addOre(biome, ore.getFillerBlockType(), ore);
-            }
-
-            if(spawnWorlds.contains(Ore.SpawnWorld.THEEND)) {
-                if(biome.getCategory() == Biome.Category.THEEND) addOre(biome, ore.getFillerBlockType(), ore);
+            if(spawnWorld.equals(Ore.SpawnWorld.NETHER)) {
+                if(biome.getCategory() == Biome.Category.NETHER) addOre(biome, OreFeatureConfig.FillerBlockType.NETHERRACK, ore);
+            //}else if (spawnWorld.equals(Ore.SpawnWorld.THEEND)) {
+            //    if(biome.getCategory() == Biome.Category.THEEND) addOre(biome, ore.getFillerBlockType(), ore);
+            }else {
+                if(biome.getCategory() != Biome.Category.NETHER || biome.getCategory() != Biome.Category.THEEND) addOre(biome, OreFeatureConfig.FillerBlockType.NATURAL_STONE, ore);
             }
 
         }
@@ -55,7 +51,7 @@ public class WorldGenerator {
 
     private static void addOre(Biome biome, OreFeatureConfig.FillerBlockType target, Ore ore) {
         biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Biome.createDecoratedFeature(Feature.ORE,
-                new OreFeatureConfig(target, ore.getBlock().getDefaultState(), ore.getVeinSize()), Placement.COUNT_RANGE,
+                new OreFeatureConfig(target, ore.getBlockState(), ore.getVeinSize()), Placement.COUNT_RANGE,
                 new CountRangeConfig(ore.getVeinsPerChunk(),ore.getMinY(),ore.getMinY(),ore.getMaxY())));
     }
 

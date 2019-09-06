@@ -8,30 +8,20 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-@Mod("zlib")
+@Mod(ZLib.MOD_ID)
 public class ZLib extends ZMod {
 
     public static final String MOD_ID = "zlib";
     public static final String MOD_NAME = "ZLib";
 
     public ZLib() {
-        super();
+        super(MOD_ID);
         FMLJavaModLoadingContext.get().getModEventBus().register(Registries.class);
-
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::loadComplete);
     }
 
     @Override
     public void onCommonSetup(FMLCommonSetupEvent event) {
-
-    }
-
-    public void loadComplete(FMLLoadCompleteEvent event) {
         WorldGenerator.initFeatures();
     }
 
-    @Override
-    public void onClientSetup(FMLClientSetupEvent event) {
-
-    }
 }
