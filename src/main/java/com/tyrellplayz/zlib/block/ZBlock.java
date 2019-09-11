@@ -9,6 +9,11 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+/**
+ * The base class for block.
+ * @author TyrellPlayz
+ * @since 0.1.0
+ */
 public abstract class ZBlock extends Block {
 
     public ZBlock(Properties properties) {

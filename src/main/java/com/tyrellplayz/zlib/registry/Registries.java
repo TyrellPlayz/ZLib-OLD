@@ -5,19 +5,19 @@ import com.tyrellplayz.zlib.world.ore.Ore;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.registries.RegistryBuilder;
 
 public class Registries {
 
     @SubscribeEvent
     public static void registerRegistries(RegistryEvent.NewRegistry event) {
         // Ore
-        net.minecraftforge.registries.RegistryBuilder<Ore> builder = new net.minecraftforge.registries.RegistryBuilder<>();
-        builder.setType(Ore.class);
-        ResourceLocation key = new ResourceLocation(ZLib.MOD_ID, "ore");
-        builder.setName(key);
-        builder.setDefaultKey(key);
-        builder.create();
-
+        RegistryBuilder<Ore> builderOre = new RegistryBuilder<>();
+        builderOre.setType(Ore.class);
+        ResourceLocation keyOre = new ResourceLocation(ZLib.MOD_ID, "ore");
+        builderOre.setName(keyOre);
+        builderOre.setDefaultKey(keyOre);
+        builderOre.create();
     }
 
 }
