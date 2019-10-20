@@ -30,6 +30,23 @@ public class VoxelShapeHelper {
         return rotate(create(pixelsFromNorth,pixelsFromEast,pixelsFromSouth,pixelsFromWest,pixelsFromUp,pixelsFromDown),direction);
     }
 
+    public static VoxelShape create(double pixelsFromNorth, double pixelsFromEast, double pixelsFromSouth, double pixelsFromWest, double pixelsFromUp, double pixelsFromDown, Direction direction, Direction.Axis axis, double offset) {
+        offset = offset*16;
+        if(axis == Direction.Axis.X) {
+
+        }else if(axis == Direction.Axis.Z) {
+
+        }
+        switch (axis) {
+            default:
+                return rotate(create(pixelsFromNorth,pixelsFromEast-offset,pixelsFromSouth,pixelsFromWest+offset,pixelsFromUp,pixelsFromDown),direction);
+            case Z:
+                return rotate(create(pixelsFromNorth+offset,pixelsFromEast,pixelsFromSouth-offset,pixelsFromWest,pixelsFromUp,pixelsFromDown),direction);
+        }
+
+    }
+
+
     /**
      * Combines all VoxelShapes into one {@link VoxelShape}.
      * @param shapes List of the VoxelHapes to combine.

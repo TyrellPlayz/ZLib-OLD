@@ -1,6 +1,8 @@
 package com.tyrellplayz.zlib.registry;
 
 import net.minecraft.block.Block;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.IDataProvider;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 /**
  * Contains methods to register Blocks.
@@ -30,6 +33,10 @@ public abstract class BlockRegistry {
 
     protected static Block register(String id, Block block, Item.Properties properties){
         return register(id,block,new BlockItem(block, properties));
+    }
+
+    protected static Block register(String id, Block block, Function<Block, BlockItem> blockItemFunction) {
+        return register(id,block,blockItemFunction.apply(block));
     }
 
     protected static Block register(String id, Block block, BlockItem itemBlock){
