@@ -3,6 +3,7 @@ package com.tyrellplayz.zlib.world;
 import com.tyrellplayz.zlib.world.ore.Ore;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -35,9 +36,9 @@ public class WorldGenerator {
         checkedBiomes.add(biome);
 
         for (Ore ore : ores) {
-            Ore.SpawnWorld spawnWorld = ore.getSpawnWorld();
+            DimensionType spawnWorld = ore.getSpawnDimension();
 
-            if(spawnWorld.equals(Ore.SpawnWorld.NETHER)) {
+            if(spawnWorld.equals(DimensionType.THE_NETHER)) {
                 if(biome.getCategory() == Biome.Category.NETHER) addOre(biome, OreFeatureConfig.FillerBlockType.NETHERRACK, ore);
             //}else if (spawnWorld.equals(Ore.SpawnWorld.THEEND)) {
             //    if(biome.getCategory() == Biome.Category.THEEND) addOre(biome, ore.getFillerBlockType(), ore);
