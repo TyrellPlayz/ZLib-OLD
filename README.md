@@ -10,7 +10,7 @@ Only supports 1.14
 - Helpful classes for registering Blocks, Items, etc.
 - Custom registries for registering things like Ores.
 - World generation for ores.
-- Data support (Not fully implemented yet).
+- Data support.
 - More to come.
 
 **Examples**

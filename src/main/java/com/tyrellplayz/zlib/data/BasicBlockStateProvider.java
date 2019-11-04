@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.tyrellplayz.zlib.block.ICustomBlockState;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
@@ -46,11 +47,11 @@ public class BasicBlockStateProvider extends AbstractDataProvider {
             if(block instanceof ICustomBlockState) blockStateJson = ((ICustomBlockState)block).getBlockStateObject(block.getRegistryName());
             else {
                 // Check if the block can have a state created for it.
-                if(!block.getDefaultState().getProperties().isEmpty() && !block.getDefaultState().has(BlockStateProperties.WATERLOGGED)) {
+                if(!block.getDefaultState().getProperties().isEmpty() && !block.getDefaultState().has(BlockStateProperties.WATERLOGGED) && !block.getDefaultState().has(BlockStateProperties.HORIZONTAL_FACING)) {
                     LOGGER.warn("Cannot create blockstate file for "+block.getRegistryName());
                     continue;
                 }
-                blockStateJson = createDefaultState(block);
+                blockStateJson = block.getDefaultState().has(BlockStateProperties.HORIZONTAL_FACING) ? createHorizontalFacingState(block) : createDefaultState(block);
             }
             // Save the state file.
             IDataProvider.save(GSON,cache,blockStateJson,new File(getOutputBlockStateFolder(MOD_ID),fileName).toPath());
@@ -68,6 +69,31 @@ public class BasicBlockStateProvider extends AbstractDataProvider {
         variantsObject.add("variants",normalObject);
 
         return variantsObject;
+    }
+
+    public JsonObject createHorizontalFacingState(Block block) {
+        JsonObject object = new JsonObject();
+
+        JsonObject northModelObject = new JsonObject();
+        northModelObject.addProperty("model",block.getRegistryName().getNamespace()+":block/"+block.getRegistryName().getPath());
+        JsonObject eastModelObject = new JsonObject();
+        eastModelObject.addProperty("model",block.getRegistryName().getNamespace()+":block/"+block.getRegistryName().getPath());
+        eastModelObject.addProperty("y","90");
+        JsonObject southModelObject = new JsonObject();
+        southModelObject.addProperty("model",block.getRegistryName().getNamespace()+":block/"+block.getRegistryName().getPath());
+        eastModelObject.addProperty("y","18");
+        JsonObject westModelObject = new JsonObject();
+        westModelObject.addProperty("model",block.getRegistryName().getNamespace()+":block/"+block.getRegistryName().getPath());
+        eastModelObject.addProperty("y","270");
+
+        JsonObject variantsObject = new JsonObject();
+        variantsObject.add("facing=north",northModelObject);
+        variantsObject.add("facing=east",northModelObject);
+        variantsObject.add("facing=south",northModelObject);
+        variantsObject.add("facing=west",northModelObject);
+
+        object.add("variants",variantsObject);
+        return object;
     }
 
     @Override
