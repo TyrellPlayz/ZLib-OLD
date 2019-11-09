@@ -15,7 +15,7 @@ import javax.annotation.Nullable;
 
 public abstract class ZHorizontalBlock extends ZBlock {
 
-    public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ZHorizontalBlock(Properties properties) {
         super(properties);
@@ -24,21 +24,21 @@ public abstract class ZHorizontalBlock extends ZBlock {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return this.getDefaultState().with(DIRECTION,context.getPlacementHorizontalFacing().getOpposite());
+        return this.getDefaultState().with(FACING,context.getPlacementHorizontalFacing().getOpposite());
     }
 
     @Override
     public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction) {
-        return state.with(DIRECTION,direction.rotate(state.get(DIRECTION)));
+        return state.with(FACING,direction.rotate(state.get(FACING)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.toRotation(state.get(DIRECTION)));
+        return state.rotate(mirrorIn.toRotation(state.get(FACING)));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
-        builder.add(DIRECTION);
+        builder.add(FACING);
     }
 }

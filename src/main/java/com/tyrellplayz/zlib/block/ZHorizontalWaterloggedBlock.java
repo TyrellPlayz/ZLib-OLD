@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
 
 public abstract class ZHorizontalWaterloggedBlock extends ZWaterloggedBlock {
 
-    public static final DirectionProperty DIRECTION = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ZHorizontalWaterloggedBlock(Properties properties) {
         super(properties);
@@ -26,23 +26,23 @@ public abstract class ZHorizontalWaterloggedBlock extends ZWaterloggedBlock {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context) {
-        return super.getStateForPlacement(context).with(DIRECTION,context.getPlacementHorizontalFacing().getOpposite());
+        return super.getStateForPlacement(context).with(FACING,context.getPlacementHorizontalFacing().getOpposite());
     }
 
     @Override
     public BlockState rotate(BlockState state, IWorld world, BlockPos pos, Rotation direction) {
-        return state.with(DIRECTION,direction.rotate(state.get(DIRECTION)));
+        return state.with(FACING,direction.rotate(state.get(FACING)));
     }
 
     @Override
     public BlockState mirror(BlockState state, Mirror mirrorIn) {
-        return state.rotate(mirrorIn.toRotation(state.get(DIRECTION)));
+        return state.rotate(mirrorIn.toRotation(state.get(FACING)));
     }
 
     @Override
     protected void fillStateContainer(StateContainer.Builder<Block, BlockState> builder) {
         super.fillStateContainer(builder);
-        builder.add(DIRECTION);
+        builder.add(FACING);
     }
 
 }

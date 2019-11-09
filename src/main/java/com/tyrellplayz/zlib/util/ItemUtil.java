@@ -17,4 +17,8 @@ public class ItemUtil {
         return itemStack.getTag();
     }
 
+    public static void clearItemTag(ItemStack itemStack) {
+        itemStack.setTag(null);
+    }
+
 }
