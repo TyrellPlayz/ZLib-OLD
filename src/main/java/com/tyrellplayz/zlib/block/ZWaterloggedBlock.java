@@ -9,7 +9,6 @@ import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.BlockRenderLayer;
 
 import javax.annotation.Nullable;
 
@@ -21,10 +20,6 @@ public abstract class ZWaterloggedBlock extends ZBlock implements IWaterLoggable
         super(properties);
     }
 
-    @Override
-    public BlockRenderLayer getRenderLayer() {
-        return BlockRenderLayer.CUTOUT;
-    }
 
     @Nullable
     @Override

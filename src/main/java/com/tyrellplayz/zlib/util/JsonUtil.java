@@ -19,6 +19,18 @@ public class JsonUtil {
         return gson.fromJson(jsonObject,type);
     }
 
+    public static String getOrDefault(JsonObject object, String id, String def) {
+        JsonElement jsonElement = object.get(id);
+        if(jsonElement == null) return def;
+        return jsonElement.getAsString();
+    }
+
+    public static int getOrDefault(JsonObject object, String id, int def) {
+        JsonElement jsonElement = object.get(id);
+        if(jsonElement == null) return def;
+        return jsonElement.getAsInt();
+    }
+
     public static JsonObject loadJson(File file) throws IOException, JsonParseException {
         JsonParser parser = new JsonParser();
         BufferedReader reader = new BufferedReader(new FileReader(file));

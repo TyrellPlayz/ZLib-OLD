@@ -1,6 +1,6 @@
 
 modLoader="javafml"
-loaderVersion="[28,)"
+loaderVersion="[31,)"
 
 issueTrackerURL="https://github.com/TyrellPlayz/ZLib/issues"
 
@@ -18,12 +18,12 @@ description="The mod libray used by all mods created by TyrellPlayz"
 [[dependencies.zLib]]
     modId="forge"
     mandatory=true
-    versionRange="[28,)"
+    versionRange="[31,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.zLib]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.14.4]"
+    versionRange="[1.15.2]"
     ordering="NONE"
     side="BOTH"

@@ -9,8 +9,11 @@ import javax.annotation.Nullable;
 
 public class ZSyncTile extends ZTile {
 
-    public ZSyncTile(TileEntityType<?> tileEntityTypeIn) {
+    private final int tileEntityTypeInt;
+
+    public ZSyncTile(TileEntityType<?> tileEntityTypeIn, int tileEntityTypeInt) {
         super(tileEntityTypeIn);
+        this.tileEntityTypeInt = tileEntityTypeInt;
     }
 
     @Override
@@ -21,7 +24,7 @@ public class ZSyncTile extends ZTile {
     @Nullable
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
-        return new SUpdateTileEntityPacket(this.getPos(),0,this.write(new CompoundNBT()));
+        return new SUpdateTileEntityPacket(this.getPos(),tileEntityTypeInt,this.getUpdateTag());
     }
 
     @Override
@@ -32,7 +35,7 @@ public class ZSyncTile extends ZTile {
 
     protected void sync() {
         markDirty();
-        this.world.notifyBlockUpdate(this.pos,this.getBlockState(),this.getBlockState(),3);
+        this.world.notifyBlockUpdate(this.getPos(),this.getBlockState(),this.getBlockState(),3);
     }
 
 }

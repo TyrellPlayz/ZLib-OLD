@@ -16,7 +16,15 @@ public class MathsHelper {
         return MathHelper.clamp(value,min,Integer.MAX_VALUE);
     }
 
+    public static double min(double value, double min){
+        return MathHelper.clamp(value,min,Double.MAX_VALUE);
+    }
+
     public static int max(int value, int max){
+        return MathHelper.clamp(value,0,max);
+    }
+
+    public static double max(double value, double max){
         return MathHelper.clamp(value,0,max);
     }
 

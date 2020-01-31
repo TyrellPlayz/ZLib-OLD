@@ -23,27 +23,61 @@ public abstract class BlockRegistry {
     protected static final List<Block> BLOCKS = new ArrayList<>();
     protected static final List<Item> ITEMS = new ArrayList<>();
 
-    protected static Block register(String id, Block block){
-        return register(id,block,new Item.Properties());
+    /**
+     * Registers a block
+     * @param registryName The registry name of the block.
+     * @param block
+     * @return
+     */
+    protected static Block register(String registryName, Block block){
+        return register(registryName,block,new Item.Properties());
     }
 
-    protected static Block register(String id, Block block, ItemGroup group){
-        return register(id,block,new Item.Properties().group(group));
+    /**
+     * Registers a block
+     * @param registryName The registry name of the block.
+     * @param block
+     * @param group
+     * @return
+     */
+    protected static Block register(String registryName, Block block, ItemGroup group){
+        return register(registryName,block,new Item.Properties().group(group));
     }
 
-    protected static Block register(String id, Block block, Item.Properties properties){
-        return register(id,block,new BlockItem(block, properties));
+    /**
+     * Registers a block
+     * @param registryName The registry name of the block.
+     * @param block
+     * @param properties
+     * @return
+     */
+    protected static Block register(String registryName, Block block, Item.Properties properties){
+        return register(registryName,block,new BlockItem(block, properties));
     }
 
-    protected static Block register(String id, Block block, Function<Block, BlockItem> blockItemFunction) {
-        return register(id,block,blockItemFunction.apply(block));
+    /**
+     * Registers a block
+     * @param registryName The registry name of the block.
+     * @param block
+     * @param blockItemFunction
+     * @return
+     */
+    protected static Block register(String registryName, Block block, Function<Block, BlockItem> blockItemFunction) {
+        return register(registryName,block,blockItemFunction.apply(block));
     }
 
-    protected static Block register(String id, Block block, BlockItem itemBlock){
-        block.setRegistryName(id);
+    /**
+     * Registers a block
+     * @param registryName The registry name of the block.
+     * @param block
+     * @param itemBlock
+     * @return
+     */
+    protected static Block register(String registryName, Block block, BlockItem itemBlock){
+        block.setRegistryName(registryName);
         BLOCKS.add(block);
         if(block.getRegistryName() != null){
-            itemBlock.setRegistryName(id);
+            itemBlock.setRegistryName(registryName);
             ITEMS.add(itemBlock);
         }
         return block;
