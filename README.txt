@@ -17,7 +17,7 @@ Standalone source installation
 See the Forge Documentation online for more detailed instructions:
 http://mcforge.readthedocs.io/en/latest/gettingstarted/
 
-Step 1: Open your command-line and browse to the folder where you extracted the zip file.
+Step 1: Open your command-line and browse to the folder where you extracted the zip IFile.
 
 Step 2: You're left with a choice.
 If you prefer to use Eclipse:
@@ -30,7 +30,7 @@ If you prefer to use Eclipse:
 
 If you prefer to use IntelliJ:
 1. Open IDEA, and import project.
-2. Select your build.gradle file and have it import.
+2. Select your build.gradle IFile and have it import.
 3. Run the following command: "gradlew genIntellijRuns" (./gradlew genIntellijRuns if you are on Mac/Linux)
 4. Refresh the Gradle Project in IDEA if required.
 

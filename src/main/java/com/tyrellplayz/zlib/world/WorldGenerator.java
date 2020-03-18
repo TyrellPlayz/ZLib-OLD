@@ -54,7 +54,7 @@ public class WorldGenerator {
     private static void addOre(Biome biome, OreFeatureConfig.FillerBlockType target, Ore ore) {
         OreFeatureConfig config = new  OreFeatureConfig(target, ore.getBlockState(), ore.getVeinSize());
         CountRangeConfig rangeConfig = new CountRangeConfig(ore.getVeinsPerChunk(),ore.getMinY(),ore.getMinY(),ore.getMaxY());
-        biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.func_225566_b_(config).func_227228_a_(Placement.COUNT_RANGE.func_227446_a_(rangeConfig)));
+        biome.addFeature(GenerationStage.Decoration.UNDERGROUND_ORES, Feature.ORE.withConfiguration(config).withPlacement(Placement.COUNT_RANGE.configure(rangeConfig)));
     }
 
 

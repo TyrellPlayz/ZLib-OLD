@@ -2,8 +2,6 @@
 
 The mod library used for all of my mods.
 
-Only supports 1.14
-
 **Features**
 
 - Default block classes.
