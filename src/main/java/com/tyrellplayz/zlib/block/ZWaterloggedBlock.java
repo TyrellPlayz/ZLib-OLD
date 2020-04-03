@@ -17,7 +17,7 @@ public abstract class ZWaterloggedBlock extends ZBlock implements IWaterLoggable
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
 
     public ZWaterloggedBlock(Properties properties) {
-        super(properties);
+        super(properties.notSolid());
     }
 
 

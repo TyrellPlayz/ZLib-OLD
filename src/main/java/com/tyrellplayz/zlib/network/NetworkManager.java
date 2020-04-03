@@ -5,7 +5,6 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkEvent;
@@ -18,7 +17,7 @@ import java.util.function.Supplier;
 
 public class NetworkManager {
 
-    public final ResourceLocation channelVersion;
+    public final ResourceLocation name;
     public final String protocolVersion;
 
     private final SimpleChannel CHANNEL;
@@ -28,18 +27,21 @@ public class NetworkManager {
     }
 
     public NetworkManager(String modId, String protocolVersion) {
-        this.channelVersion = new ResourceLocation(modId,"main_channel");
+        this.name = new ResourceLocation(modId,"main_channel");
         this.protocolVersion = protocolVersion;
-        CHANNEL = NetworkRegistry.newSimpleChannel(
-                channelVersion,
-                () -> protocolVersion,
-                s -> true,
-                s -> true
-        );
+        CHANNEL = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, s -> true, s -> true);
     }
 
     public <T extends Message<T>> void registerMessage(int index, Class<T> messageType, BiConsumer<T, PacketBuffer> encoder, Function<PacketBuffer, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
         CHANNEL.registerMessage(index, messageType,encoder,decoder,messageConsumer);
+    }
+
+    public SimpleChannel getChannel() {
+        return CHANNEL;
+    }
+
+    public ResourceLocation getChannelName() {
+        return name;
     }
 
     /**

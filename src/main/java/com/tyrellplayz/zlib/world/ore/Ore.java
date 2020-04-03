@@ -75,7 +75,7 @@ public class Ore extends ForgeRegistryEntry<Ore> {
 
     public static class Properties {
 
-        private List<ResourceLocation> biomes;
+        private List<ResourceLocation> biomes = new ArrayList<>();
         private OreFeatureConfig.FillerBlockType type;
         private int veinSize;
         private int veinsPerChunk;

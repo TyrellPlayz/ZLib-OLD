@@ -20,7 +20,7 @@ public abstract class ZHorizontalWaterloggedBlock extends ZWaterloggedBlock {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public ZHorizontalWaterloggedBlock(Properties properties) {
-        super(properties);
+        super(properties.notSolid());
     }
 
     @Nullable

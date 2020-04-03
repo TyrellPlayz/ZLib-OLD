@@ -1,4 +1,4 @@
-package com.tyrellplayz.zlib.client.gui;
+package com.tyrellplayz.zlib.client.screen;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
