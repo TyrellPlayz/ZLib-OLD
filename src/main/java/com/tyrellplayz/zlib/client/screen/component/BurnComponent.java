@@ -3,7 +3,7 @@ package com.tyrellplayz.zlib.client.screen.component;
 import com.tyrellplayz.zlib.util.helpers.RenderHelper;
 import net.minecraft.client.Minecraft;
 
-public class BurnComponent extends Component {
+public class BurnComponent extends Component<BurnComponent> {
 
     private int burnTime;
     private int currentBurnTime;

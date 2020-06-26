@@ -27,7 +27,7 @@ public class ZLib extends ZMod {
     public static final String MOD_ID = "zlib";
     public static final String MOD_NAME = "ZLib";
 
-    public static CommonProxy proxy = DistExecutor.runForDist(() -> ClientProxy::new, () -> ServerProxy::new);
+    public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> ServerProxy::new);
 
     public ZLib() {
         super(MOD_ID);
@@ -47,8 +47,7 @@ public class ZLib extends ZMod {
         Minecraft minecraft = Minecraft.getInstance();
         IResourceManager resourceManager = minecraft.getResourceManager();
         if(resourceManager instanceof IReloadableResourceManager) {
-            IReloadableResourceManager reloadableResourceManager = (IReloadableResourceManager) resourceManager;
-            reloadableResourceManager.addReloadListener(new ResourcesReloadedEvent.ClientReloadListener());
+            ((IReloadableResourceManager) resourceManager).addReloadListener(new ResourcesReloadedEvent.ClientReloadListener());
         }
     }
 

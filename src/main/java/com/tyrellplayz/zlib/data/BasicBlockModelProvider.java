@@ -16,14 +16,14 @@ public class BasicBlockModelProvider extends AbstractDataProvider {
     protected final Collection<Block> BLOCKS;
 
     public BasicBlockModelProvider(DataGenerator generator, String modId, Collection<Block> BLOCKS) {
-        super(generator, modId);
+        super(generator, modId,DataProviderType.BLOCK_MODELS);
         this.BLOCKS = BLOCKS;
     }
 
     @Override
     public void act(DirectoryCache cache) throws IOException {
-        File modelInputFolder = getInputBlockModelFolder(MOD_ID);
-        File modelOutputFolder = getOutputBlockModelFolder(MOD_ID);
+        File modelInputFolder = getInputPath().toFile();
+        File modelOutputFolder = getOutputPath().toFile();
 
         for (Block block : BLOCKS) {
             File modelFileIn = new File(modelInputFolder,block.getRegistryName().getPath()+".json");

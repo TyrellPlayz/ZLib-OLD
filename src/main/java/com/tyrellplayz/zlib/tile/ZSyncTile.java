@@ -33,7 +33,7 @@ public class ZSyncTile extends ZTile {
         this.read(pkt.getNbtCompound());
     }
 
-    protected void sync() {
+    public void sync() {
         markDirty();
         this.world.notifyBlockUpdate(this.getPos(),this.getBlockState(),this.getBlockState(),3);
     }

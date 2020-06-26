@@ -23,15 +23,15 @@ public class ItemModelProvider extends AbstractDataProvider {
     private final Collection<Item> ITEMS;
 
     public ItemModelProvider(DataGenerator generator, String modId, Collection<Block> BLOCKS, Collection<Item> ITEMS) {
-        super(generator, modId);
+        super(generator, modId,DataProviderType.ITEM_MODELS);
         this.BLOCKS = BLOCKS;
         this.ITEMS = ITEMS;
     }
 
     @Override
     public void act(DirectoryCache cache) throws IOException {
-        File modelInputFolder = getInputItemModelFolder(MOD_ID);
-        File modelOutputFolder = getOutputItemModelFolder(MOD_ID);
+        File modelInputFolder = getInputPath().toFile();
+        File modelOutputFolder = getOutputPath().toFile();
 
         // Go though each registered item.
         for (Item item : ITEMS) {

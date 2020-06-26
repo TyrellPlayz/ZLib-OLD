@@ -2,6 +2,7 @@ package com.tyrellplayz.zlib;
 
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IDataProvider;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -14,9 +15,9 @@ import java.util.function.Function;
 
 public abstract class ZMod {
 
-    private List<Function<DataGenerator, IDataProvider>> dataProviders = new ArrayList<>();
-
     public final String MOD_ID;
+
+    private List<Function<DataGenerator, IDataProvider>> dataProviders = new ArrayList<>();
 
     public ZMod(String modId) {
         this.MOD_ID = modId;

@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 /**
  * Represents a component in an application.
  */
-public abstract class Component implements IGuiEventListener {
+public abstract class Component<T extends Component<T>> implements IGuiEventListener {
 
     protected static final ResourceLocation COMPONENT_TEXTURES = new ResourceLocation(ZLib.MOD_ID,"textures/gui/components.png");
 
@@ -41,9 +41,9 @@ public abstract class Component implements IGuiEventListener {
         if(onTick != null) onTick.tick(this);
     }
 
-    public Component setOnTick(OnTick onTick) {
+    public T setOnTick(OnTick onTick) {
         this.onTick = onTick;
-        return this;
+        return (T) this;
     }
 
     public abstract void render(int mouseX, int mouseY, float partialTicks);
@@ -145,8 +145,8 @@ public abstract class Component implements IGuiEventListener {
         this.yPos = yPos+getTop();
     }
 
-    public interface OnTick {
-        void tick(Component component);
+    public interface OnTick<T extends Component<T>> {
+        void tick(T component);
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 public abstract class Message<T extends Message<T>> {
 
-    private String name;
+    private final String name;
 
     public Message(String name) {
         this.name = name;

@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 /**
  * Holds all the information to generate ore in a world.
+ * TODO: Add support for custom biomes.
  * @author TyrellPlayz
  * @since 0.1.0
  */

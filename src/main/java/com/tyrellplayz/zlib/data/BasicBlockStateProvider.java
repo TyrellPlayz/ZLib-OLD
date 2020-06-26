@@ -1,10 +1,8 @@
 package com.tyrellplayz.zlib.data;
 
-import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import com.tyrellplayz.zlib.block.ICustomBlockState;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DirectoryCache;
 import net.minecraft.data.IDataProvider;
@@ -12,9 +10,7 @@ import net.minecraft.state.properties.BlockStateProperties;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Creates {@link net.minecraft.block.BlockState} files for registered blocks.
@@ -25,7 +21,7 @@ public class BasicBlockStateProvider extends AbstractDataProvider {
     private final Collection<Block> BLOCKS;
 
     public BasicBlockStateProvider(DataGenerator generator, String modId, Collection<Block> BLOCKS) {
-        super(generator, modId);
+        super(generator, modId,DataProviderType.BLOCK_STATES);
         this.BLOCKS = BLOCKS;
     }
 
@@ -40,7 +36,7 @@ public class BasicBlockStateProvider extends AbstractDataProvider {
         // Go though all blocks in the list and try to create a state file for it.
         for (Block block : BLOCKS) {
             String fileName = block.getRegistryName().getPath()+".json";
-            File file = new File(getInputBlockStateFolder(MOD_ID),fileName);
+            File file = new File(getInputPath().toFile(),fileName);
             if(file.exists())continue;
 
             JsonObject blockStateJson;
@@ -54,7 +50,7 @@ public class BasicBlockStateProvider extends AbstractDataProvider {
                 blockStateJson = block.getDefaultState().has(BlockStateProperties.HORIZONTAL_FACING) ? createHorizontalFacingState(block) : createDefaultState(block);
             }
             // Save the state file.
-            IDataProvider.save(GSON,cache,blockStateJson,new File(getOutputBlockStateFolder(MOD_ID),fileName).toPath());
+            IDataProvider.save(GSON,cache,blockStateJson,new File(getOutputPath().toFile(),fileName).toPath());
         }
     }
 

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IDataProvider;
+import net.minecraft.resources.ResourcePackType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,46 +17,26 @@ public abstract class AbstractDataProvider implements IDataProvider {
     protected final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
 
     protected final DataGenerator GENERATOR;
-    protected final Path OUTPUT_PATH;
+    private final Path OUTPUT_PATH;
     protected final Path INPUT_PATH;
     protected final String MOD_ID;
+    protected final DataProviderType PROVIDER_TYPE;
 
-    public AbstractDataProvider(DataGenerator generator, String modId) {
+    public AbstractDataProvider(DataGenerator generator, String modId, DataProviderType providerType) {
         this.LOGGER = LogManager.getLogger(modId);
         this.GENERATOR = generator;
         this.MOD_ID = modId;
         this.OUTPUT_PATH = generator.getOutputFolder();
         this.INPUT_PATH = generator.getInputFolders().stream().findFirst().orElse(null);
+        this.PROVIDER_TYPE = providerType;
     }
 
-    @Nullable
-    protected File getInputBlockStateFolder(String modId) {
-        if(INPUT_PATH == null) return null;
-        return INPUT_PATH.resolve("assets/"+modId+"/blockstates").toFile();
+    public Path getOutputPath() {
+        return OUTPUT_PATH.resolve(PROVIDER_TYPE.getPackType().getDirectoryName()+"/"+MOD_ID+"/"+PROVIDER_TYPE.getDirectoryName());
     }
 
-    protected File getOutputBlockStateFolder(String modId) {
-        return OUTPUT_PATH.resolve("assets/"+modId+"/blockstates").toFile();
-    }
-
-    @Nullable
-    protected File getInputBlockModelFolder(String modId) {
-        if(INPUT_PATH == null) return null;
-        return INPUT_PATH.resolve("assets/"+modId+"/models/block").toFile();
-    }
-
-    protected File getOutputBlockModelFolder(String modId) {
-        return OUTPUT_PATH.resolve("assets/"+modId+"/models/block").toFile();
-    }
-
-    @Nullable
-    protected File getInputItemModelFolder(String modId) {
-        if(INPUT_PATH == null) return null;
-        return INPUT_PATH.resolve("assets/"+modId+"/models/item").toFile();
-    }
-
-    protected File getOutputItemModelFolder(String modId) {
-        return OUTPUT_PATH.resolve("assets/"+modId+"/models/item").toFile();
+    public Path getInputPath() {
+        return INPUT_PATH.resolve(PROVIDER_TYPE.getPackType().getDirectoryName()+"/"+MOD_ID+"/"+PROVIDER_TYPE.getDirectoryName());
     }
 
 }

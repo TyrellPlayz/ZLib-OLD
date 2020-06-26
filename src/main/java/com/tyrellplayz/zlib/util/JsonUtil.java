@@ -3,19 +3,45 @@ package com.tyrellplayz.zlib.util;
 import com.google.gson.*;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JsonUtil {
 
     private JsonUtil() {}
 
+    /**
+     * Serializes an object into a {@link JsonObject}.
+     * @param object The object to be serialized.
+     */
     public static JsonObject serialize(Object object) {
-        Gson gson = new Gson();
+        return serialize(new Gson(),object);
+    }
+
+    /**
+     * Serializes an object into a {@link JsonObject}.
+     * @param object The object to be serialized.
+     */
+    public static JsonObject serialize(Gson gson, Object object) {
         JsonParser parser = new JsonParser();
         return parser.parse(gson.toJson(object)).getAsJsonObject();
     }
 
+    /**
+     * Deserializes a {@link JsonObject} into the given class.
+     * @param jsonObject The object to be serialized.
+     * @param type The class of T.
+     */
     public static <T> T deserialize(JsonObject jsonObject, Class<T> type) {
-        Gson gson = new Gson();
+        return deserialize(new Gson(),jsonObject,type);
+    }
+
+    /**
+     * Deserializes a {@link JsonObject} into the given class.
+     * @param jsonObject The object to be serialized.
+     * @param type The class of T.
+     */
+    public static <T> T deserialize(Gson gson,JsonObject jsonObject, Class<T> type) {
         return gson.fromJson(jsonObject,type);
     }
 
@@ -29,6 +55,15 @@ public class JsonUtil {
         JsonElement jsonElement = object.get(id);
         if(jsonElement == null) return def;
         return jsonElement.getAsInt();
+    }
+
+    public static List<String> getOrDefault(JsonObject object, String id, List<String> def) {
+        JsonElement jsonElement = object.get(id);
+        if(jsonElement == null) return def;
+        if(!jsonElement.isJsonArray()) return def;
+        List<String> strings = new ArrayList<>();
+        jsonElement.getAsJsonArray().forEach(jsonElement1 -> strings.add(jsonElement1.getAsString()));
+        return strings;
     }
 
     public static JsonObject loadJson(File file) throws IOException, JsonParseException {
