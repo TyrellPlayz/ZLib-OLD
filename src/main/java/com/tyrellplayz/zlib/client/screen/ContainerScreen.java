@@ -1,5 +1,6 @@
 package com.tyrellplayz.zlib.client.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tyrellplayz.zlib.client.screen.component.Component;
 import net.minecraft.entity.player.PlayerInventory;
@@ -35,17 +36,17 @@ public class ContainerScreen<T extends Container> extends net.minecraft.client.g
     }
 
     @Override
-    protected final void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        String text = title.getFormattedText();
-        this.font.drawString(text, (float)(this.xSize / 2 - this.font.getStringWidth(text) / 2), 6.0F, 4210752);
-        this.font.drawString(this.playerInventory.getDisplayName().getFormattedText(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+    protected final void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
+        String text = title.getString();
+        this.fontRenderer.drawString(matrixStack,text, (float)(this.xSize / 2 - this.fontRenderer.getStringWidth(text) / 2), 6.0F, 4210752);
+        this.fontRenderer.drawString(matrixStack,this.playerInventory.getDisplayName().getString(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
-    protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
+    protected void drawGuiContainerBackgroundLayer(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.minecraft.getTextureManager().bindTexture(GUI_TEXTURE);
-        this.blit(guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
+        this.blit(matrixStack,guiLeft, guiTop, 0, 0, this.xSize, this.ySize);
 
         components.forEach(component -> component.render(mouseX,mouseY,0));
     }

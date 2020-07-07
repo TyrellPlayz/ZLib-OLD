@@ -28,3 +28,7 @@ gradle.properties
 
 libs
 changelog.txt
+
+# Mappings
+mappings/mcp
+mappings/merged

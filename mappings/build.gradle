@@ -1,0 +1,124 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+ext.channel = 'snapshot'
+ext.dlVersion = getDate()
+ext.mcVersion = '1.16.1'
+
+group = 'de.oceanlabs.mcp'
+version = dlVersion + '-' + mcVersion
+archivesBaseName = 'mcp_' + ext.channel
+
+static def getDate() {
+    return new Date().format('yyyyMMddHHmm')
+}
+
+def downloadCSV(name) {
+    mkdir 'mcp'
+    def out = new File("$projectDir/mcp/" + name)
+    new URL('http://export.mcpbot.bspk.rs/' + name).withInputStream{ i -> out.withOutputStream{ it << i }}
+}
+
+/**
+ * Merges two mapping files into a new one. Any mappings in the custom mappings will be overridden my mcp mappings.
+ * If the first column contains a # it will be treated as a comment and won't be added to the merged file.
+ * @param newFilePath
+ * @param mcpMappings
+ * @param customMappings
+ * @return
+ */
+def merge(newFilePath,mcpMappings,customMappings) {
+    File newFile = new File("$projectDir/"+newFilePath)
+    newFile.delete()
+    newFile.createNewFile()
+    BufferedWriter writer = new BufferedWriter(new FileWriter(newFile,true))
+
+    String[] headers = null
+    Scanner scanner = new Scanner(new File("$projectDir/"+mcpMappings))
+
+    if(scanner.hasNextLine()) {
+        String headerLine = scanner.nextLine()
+        writer.write(headerLine)
+        writer.newLine()
+        headers = headerLine.split(",")
+    }
+    scanner.close()
+    List<String> srgUsed = new ArrayList<>();
+
+    // Write the mcp mappings first.
+    File mcpMappingsFile = new File("$projectDir/"+mcpMappings)
+    BufferedReader mcpMappingsReader = new BufferedReader(new FileReader(mcpMappingsFile))
+
+    String line1 = null;
+    String[] firstLine1 = null;
+    if((line1 = mcpMappingsReader.readLine()) != null) firstLine1 = line1.split(",")
+    if (!Arrays.equals(headers, firstLine1)) throw new IOException("Header mis-match between CSV files")
+    while ((line1 = mcpMappingsReader.readLine()) != null) {
+        srgUsed.add(line1.split(",")[0])
+        writer.write(line1)
+        writer.newLine()
+    }
+    mcpMappingsReader.close()
+
+    // Write the custom mappings.
+    File customMappingsFile = new File("$projectDir/"+customMappings)
+    BufferedReader customMappingsReader = new BufferedReader(new FileReader(customMappingsFile))
+
+    String line2 = null;
+    String[] firstLine2 = null;
+    if((line2 = customMappingsReader.readLine()) != null) firstLine2 = line2.split(",")
+    if (!Arrays.equals(headers, firstLine2)) throw new IOException("Header mis-match between CSV files")
+    while ((line2 = customMappingsReader.readLine()) != null) {
+        String firstColumn = line2.split(",")[0]
+        if(srgUsed.contains(firstColumn) || firstColumn.contains('#')) continue;
+        writer.write(line2)
+        writer.newLine()
+    }
+    customMappingsReader.close()
+
+    writer.close()
+}
+
+def printArray(String[] array) {
+    String text = "";
+    for (int i = 0; i < array.size(); i++) {
+        text = text + array[i]+", ";
+    }
+    println(text)
+}
+
+/**
+ * Downloads the MCP Mappings. Disabled until 1.16.1 are available.
+ */
+task downloadCSVs {
+    // Temporarily disabled
+    //downloadCSV('fields.csv')
+    //downloadCSV('methods.csv')
+    //downloadCSV('params.csv')
+}
+
+/**
+ * Merges the custom mappings with the mcp mappings.
+ * If a custom mapping is already in the mcp mappings in wont replace the mcp mapping.
+ */
+task mergeMappings {
+    merge('merged/methods.csv', 'mcp/methods.csv','custom/methods.csv')
+    merge('merged/fields.csv', 'mcp/fields.csv','custom/fields.csv')
+    merge('merged/params.csv', 'mcp/params.csv','custom/params.csv')
+}
+
+jar {
+    extension = 'zip'
+    from 'merged/fields.csv'
+    from 'merged/methods.csv'
+    from 'merged/params.csv'
+}
+
+install {
+    repositories.mavenInstaller {
+        pom.groupId = project.group
+        pom.version = project.version
+        pom.artifactId = 'mcp_' + project.channel
+    }
+    println("Installed local mapping: "+project.version)
+}

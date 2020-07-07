@@ -1,5 +1,6 @@
 package com.tyrellplayz.zlib.util.helpers;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
@@ -107,22 +108,15 @@ public class RenderHelper {
         return mouseX >= x && mouseX < x + width && mouseY >= y && mouseY < y + height;
     }
 
-    public static void drawString(String text, double x, double y, Color color) {
-        Minecraft.getInstance().fontRenderer.drawString(text,(float) x,(float) y,color.getRGB());
+    public static void drawString(MatrixStack matrixStack, String text, double x, double y, Color color) {
+        Minecraft.getInstance().fontRenderer.drawString(matrixStack,text,(float) x,(float) y,color.getRGB());
     }
 
-    public static void drawStringScaled(String text, double x, double y, int color, double xScale, double yScale) {
-        RenderSystem.pushMatrix();
-        RenderSystem.scaled(0.8,0.9,1);
-        Minecraft.getInstance().fontRenderer.drawString(text,(float) x,(float) y,color);
-        RenderSystem.popMatrix();
-    }
-
-    public static void drawStringClipped(String text, int x, int y, int width, int color, boolean shadow) {
+    public static void drawStringClipped(MatrixStack matrixStack, String text, int x, int y, int width, int color, boolean shadow) {
         if(shadow) {
-            Minecraft.getInstance().fontRenderer.drawStringWithShadow(clipStringToWidth(text, width) + TextFormatting.RESET, x, y, color);
+            Minecraft.getInstance().fontRenderer.drawStringWithShadow(matrixStack,clipStringToWidth(text, width) + TextFormatting.RESET, x, y, color);
         }else {
-            Minecraft.getInstance().fontRenderer.drawString(clipStringToWidth(text, width) + TextFormatting.RESET, x, y, color);
+            Minecraft.getInstance().fontRenderer.drawString(matrixStack,clipStringToWidth(text, width) + TextFormatting.RESET, x, y, color);
         }
     }
 

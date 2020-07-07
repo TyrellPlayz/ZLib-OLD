@@ -30,7 +30,7 @@ public class ZSyncTile extends ZTile {
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt) {
         this.setPos(pkt.getPos());
-        this.read(pkt.getNbtCompound());
+        this.read(getBlockState(),pkt.getNbtCompound());
     }
 
     public void sync() {

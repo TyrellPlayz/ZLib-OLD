@@ -18,7 +18,7 @@ public class PlayerUtil {
     private PlayerUtil() {}
 
     public static void sendMessage(PlayerEntity player, String message){
-        if(ServerHelper.isServerWorld(player.world)) player.sendMessage(new StringTextComponent(message));
+        if(ServerHelper.isServerWorld(player.world)) player.sendMessage(new StringTextComponent(message),player.getUniqueID());
     }
 
     /**
@@ -34,7 +34,7 @@ public class PlayerUtil {
 
     public static void sendGameInfoMessage(PlayerEntity player, ITextComponent textComponent) {
         if(player instanceof ServerPlayerEntity) {
-            ((ServerPlayerEntity) player).connection.sendPacket(new SChatPacket(textComponent, ChatType.GAME_INFO));
+            ((ServerPlayerEntity) player).connection.sendPacket(new SChatPacket(textComponent, ChatType.GAME_INFO,player.getUniqueID()));
         }
     }
 

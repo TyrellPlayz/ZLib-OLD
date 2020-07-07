@@ -1,5 +1,6 @@
 package com.tyrellplayz.zlib.client.screen;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.util.text.ITextComponent;
 
@@ -25,9 +26,9 @@ public abstract class GuiScreen extends Screen {
         this.left = (this.width - xSize) / 2;
         this.top = (this.height - ySize) / 2;
     }
-
+    
     @Override
-    public abstract void render(int mouseX, int mouseY, float partialTicks);
+    public abstract void render(MatrixStack matrix, int mouseX, int mouseY, float partialTicks);
 
     public int getLeft() {
         return left;

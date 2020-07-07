@@ -2,8 +2,8 @@ package com.tyrellplayz.zlib.data.loot;
 
 import com.google.common.collect.Maps;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootParameterSet;
-import net.minecraft.world.storage.loot.LootTable;
+import net.minecraft.loot.LootParameterSet;
+import net.minecraft.loot.LootTable;
 
 import java.util.Collection;
 import java.util.Map;
@@ -21,7 +21,7 @@ public abstract class LootTables<T> {
         createTables();
         types.forEach(type -> {
             // If the lootTables map doesn't contain the types loot-table then a loot-table was not registered for it.
-            if(!lootTables.containsKey(getLootTable(type)) && getLootTable(type) != net.minecraft.world.storage.loot.LootTables.EMPTY) {
+            if(!lootTables.containsKey(getLootTable(type)) && getLootTable(type) != net.minecraft.loot.LootTables.EMPTY) {
                 // So give it the default loot-map.
                 LootTable.Builder builder = getDefaultDrop(type);
                 // If there is no default drop then do nothing.
@@ -53,7 +53,7 @@ public abstract class LootTables<T> {
     }
 
     protected void registerLootTable(ResourceLocation resourceLocation, LootTable.Builder table) {
-        if(resourceLocation != net.minecraft.world.storage.loot.LootTables.EMPTY) {
+        if(resourceLocation != net.minecraft.loot.LootTables.EMPTY) {
             this.lootTables.put(resourceLocation, table);
         }
     }

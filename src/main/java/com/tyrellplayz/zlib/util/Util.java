@@ -1,9 +1,6 @@
 package com.tyrellplayz.zlib.util;
 
 import com.tyrellplayz.zlib.ZLib;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.IProperty;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
 import org.objectweb.asm.Type;

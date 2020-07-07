@@ -3,6 +3,8 @@ package com.tyrellplayz.zlib.event;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.ResourcePackType;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.resource.IResourceType;
@@ -41,6 +43,7 @@ public abstract class ResourcesReloadedEvent extends Event {
     /**
      * Fired whenever client resources are reloaded.
      */
+    @OnlyIn(Dist.CLIENT)
     public static class Client extends ResourcesReloadedEvent {
 
         public Client(IResourceManager resourceManager) {
@@ -53,18 +56,13 @@ public abstract class ResourcesReloadedEvent extends Event {
      */
     public static class Server extends ResourcesReloadedEvent {
 
-        private final MinecraftServer server;
-
-        public Server(IResourceManager resourceManager, MinecraftServer server) {
+        public Server(IResourceManager resourceManager) {
             super(resourceManager, ResourcePackType.SERVER_DATA);
-            this.server = server;
         }
 
-        public MinecraftServer getServer() {
-            return server;
-        }
     }
 
+    @OnlyIn(Dist.CLIENT)
     public static class ClientReloadListener implements ISelectiveResourceReloadListener {
         public ClientReloadListener() { }
 
@@ -77,15 +75,11 @@ public abstract class ResourcesReloadedEvent extends Event {
 
     public static class ServerReloadListener implements ISelectiveResourceReloadListener {
 
-        private MinecraftServer server;
-
-        public ServerReloadListener(MinecraftServer server) {
-            this.server = server;
-        }
+        public ServerReloadListener() { }
 
         @Override
         public void onResourceManagerReload(IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate) {
-            MinecraftForge.EVENT_BUS.post(new ResourcesReloadedEvent.Server(resourceManager,server));
+            MinecraftForge.EVENT_BUS.post(new ResourcesReloadedEvent.Server(resourceManager));
         }
 
     }

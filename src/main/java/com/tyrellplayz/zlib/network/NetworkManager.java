@@ -6,6 +6,8 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
@@ -64,6 +66,7 @@ public class NetworkManager {
      * Sends a packet to the server.  Must only be ran on Client-side.
      * @param message The message
      */
+    @OnlyIn(Dist.CLIENT)
     public <T extends Message<T>> void sendToServer(Message<T> message) {
         CHANNEL.sendToServer(message);
     }
@@ -75,7 +78,7 @@ public class NetworkManager {
      */
     public <T extends Message<T>> void sendTo(Message<T> message, ServerPlayerEntity player) {
         if(!(player instanceof FakePlayer)) {
-            CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),message);
+            if(isServerSide()) CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),message);
         }
     }
 
@@ -86,7 +89,7 @@ public class NetworkManager {
      * @param <T>
      */
     public <T extends Message<T>> void sendToChunk(Message<T> message, Chunk chunk) {
-        CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk),message);
+        if(isServerSide()) CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk),message);
     }
 
     /**
@@ -94,7 +97,15 @@ public class NetworkManager {
      * @param message The message
      */
     public <T extends Message<T>> void sendToAll(Message<T> message) {
-        CHANNEL.send(PacketDistributor.ALL.noArg(),message);
+        if(isServerSide()) CHANNEL.send(PacketDistributor.ALL.noArg(),message);
+    }
+
+    public boolean isServerSide() {
+        if(Thread.currentThread().getName().equals("Render thread")) {
+            LOGGER.error("Cannot send packets from a server if you are on a client.");
+            return false;
+        }
+        return true;
     }
 
 }

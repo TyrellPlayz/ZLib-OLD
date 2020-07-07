@@ -2,10 +2,10 @@ package com.tyrellplayz.zlib.world;
 
 import com.tyrellplayz.zlib.ZLib;
 import com.tyrellplayz.zlib.world.ore.Ore;
+import net.minecraft.client.world.DimensionRenderInfo;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
-import net.minecraft.world.biome.Biomes;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.biome.provider.OverworldBiomeProvider;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.Feature;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
@@ -44,10 +44,10 @@ public class WorldGenerator {
         checkedBiomes.add(biome);
 
         for (Ore ore : ores) {
-            if(ore.getBiomes().contains(biome.getRegistryName())) {
-                ZLib.LOGGER.debug("Adding "+ore.getRegistryName()+" to biome "+biome.getRegistryName());
-                addOre(biome,ore.getType(),ore);
-            }
+            //if(ore.getBiomes().contains(biome.getRegistryName())) {
+           //     ZLib.LOGGER.debug("Adding "+ore.getRegistryName()+" to biome "+biome.getRegistryName());
+           //     addOre(biome,ore.getType(),ore);
+           // }
         }
     }
 

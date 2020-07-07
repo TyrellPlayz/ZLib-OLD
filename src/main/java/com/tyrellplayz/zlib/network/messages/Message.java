@@ -2,6 +2,7 @@ package com.tyrellplayz.zlib.network.messages;
 
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.SidedProvider;
 import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -28,7 +29,7 @@ public abstract class Message<T extends Message<T>> {
      * Handles the packet when received.
      */
     public abstract void handlePacket(Supplier<NetworkEvent.Context> context);
-
+    
     public String getName() {
         return name;
     }
