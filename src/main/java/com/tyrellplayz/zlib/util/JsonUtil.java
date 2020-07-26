@@ -1,6 +1,7 @@
 package com.tyrellplayz.zlib.util;
 
 import com.google.gson.*;
+import net.minecraft.util.ResourceLocation;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -45,25 +46,31 @@ public class JsonUtil {
         return gson.fromJson(jsonObject,type);
     }
 
-    public static String getOrDefault(JsonObject object, String id, String def) {
+    public static String getStringOrDefault(JsonObject object, String id, String def) {
         JsonElement jsonElement = object.get(id);
         if(jsonElement == null) return def;
         return jsonElement.getAsString();
     }
 
-    public static int getOrDefault(JsonObject object, String id, int def) {
+    public static int getIntOrDefault(JsonObject object, String id, int def) {
         JsonElement jsonElement = object.get(id);
         if(jsonElement == null) return def;
         return jsonElement.getAsInt();
     }
 
-    public static List<String> getOrDefault(JsonObject object, String id, List<String> def) {
+    public static List<String> getListOrDefault(JsonObject object, String id, List<String> def) {
         JsonElement jsonElement = object.get(id);
         if(jsonElement == null) return def;
         if(!jsonElement.isJsonArray()) return def;
         List<String> strings = new ArrayList<>();
         jsonElement.getAsJsonArray().forEach(jsonElement1 -> strings.add(jsonElement1.getAsString()));
         return strings;
+    }
+
+    public static ResourceLocation getResourceLocationOrDefault(JsonObject object, String id, ResourceLocation resourceLocation) {
+        JsonElement jsonElement = object.get(id);
+        if(jsonElement == null) return resourceLocation;
+        return new ResourceLocation(jsonElement.getAsString());
     }
 
     public static JsonObject loadJson(File file) throws IOException, JsonParseException {

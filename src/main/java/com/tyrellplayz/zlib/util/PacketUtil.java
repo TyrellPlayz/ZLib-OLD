@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.network.PacketBuffer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
 
 public class PacketUtil {
 
@@ -14,9 +14,15 @@ public class PacketUtil {
     /**
      * Writes the given list to the buffer as strings.
      */
-    public static <T> PacketBuffer writeList(PacketBuffer packetBuffer, List<T> list) {
+    public static <T> PacketBuffer writeList(PacketBuffer packetBuffer, Collection<T> list) {
         packetBuffer.writeVarInt(list.size());
         list.forEach(object -> packetBuffer.writeString(object.toString()));
+        return packetBuffer;
+    }
+
+    public static <T> PacketBuffer writeList(PacketBuffer packetBuffer, Collection<T> list, Function<T,String> toStringFunc) {
+        packetBuffer.writeVarInt(list.size());
+        list.forEach(object -> packetBuffer.writeString(toStringFunc.apply(object)));
         return packetBuffer;
     }
 
@@ -52,6 +58,49 @@ public class PacketUtil {
         int listSize = packetBuffer.readVarInt();
         for (int i = 0; i < listSize; i++) list.add(new JsonParser().parse(packetBuffer.readString()).getAsJsonObject());
         return list;
+    }
+
+
+    public static <K,V> PacketBuffer writeMap(PacketBuffer packetBuffer, Map<K,V> map) {
+        Set<K> keySet = map.keySet();
+        int size = keySet.size();
+        packetBuffer.writeVarInt(size);
+        map.forEach((k, v) -> {
+            packetBuffer.writeString(k.toString());
+            packetBuffer.writeString(packetBuffer.toString());
+        });
+        return packetBuffer;
+    }
+
+    public static <K,V> PacketBuffer writeMap(PacketBuffer packetBuffer, Map<K,V> map, Function<K,String> keyToStringFunc, Function<V,String> valueToStringFunc) {
+        packetBuffer.writeVarInt(map.size());
+        map.forEach((k, v) -> {
+            packetBuffer.writeString(keyToStringFunc.apply(k));
+            packetBuffer.writeString(valueToStringFunc.apply(v));
+        });
+        return packetBuffer;
+    }
+
+    public static Map<String,String> readStringStringMap(PacketBuffer packetBuffer) {
+        Map<String,String> stringMap = new HashMap<>();
+        int size = packetBuffer.readVarInt();
+        for (int i = 0; i < size; i++) {
+            String key = packetBuffer.readString();
+            String value = packetBuffer.readString();
+            stringMap.put(key,value);
+        }
+        return stringMap;
+    }
+
+    public static Map<String,JsonObject> readStringJsonMap(PacketBuffer packetBuffer) {
+        Map<String,JsonObject> stringJsonObjectMap = new HashMap<>();
+        int size = packetBuffer.readVarInt();
+        for (int i = 0; i < size; i++) {
+            String key = packetBuffer.readString();
+            String value = packetBuffer.readString();
+            stringJsonObjectMap.put(key,new JsonParser().parse(value).getAsJsonObject());
+        }
+        return stringJsonObjectMap;
     }
 
 }

@@ -7,7 +7,7 @@ public class ServerEvents {
 
     @SubscribeEvent
     public void onAddReloadListener(AddReloadListenerEvent event) {
-        event.addListener(new ResourcesReloadedEvent.ServerReloadListener());
+        event.addListener(new ServerResourcesReloadedEvent.ServerReloadListener());
     }
 
 }

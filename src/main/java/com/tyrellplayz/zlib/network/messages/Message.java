@@ -1,10 +1,11 @@
 package com.tyrellplayz.zlib.network.messages;
 
+import net.minecraft.network.INetHandler;
+import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.SidedProvider;
 import net.minecraftforge.fml.network.NetworkEvent;
 
+import java.io.IOException;
 import java.util.function.Supplier;
 
 public abstract class Message<T extends Message<T>> {
@@ -33,4 +34,5 @@ public abstract class Message<T extends Message<T>> {
     public String getName() {
         return name;
     }
+
 }

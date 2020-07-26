@@ -15,13 +15,13 @@ apply plugin: 'idea'
 apply plugin: 'maven'
 
 version = "${project.minecraft_version}-${project.mod_version}"
-group = "com.tyrellplayz."+mod_id
-archivesBaseName = mod_id
+group = "com.tyrellplayz.${project.mod_id}"
+archivesBaseName = project.mod_id
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: 'snapshot', version: mappings_version
+    mappings channel: 'snapshot', version: project.mappings_version
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 }
@@ -29,24 +29,19 @@ minecraft {
 repositories { mavenLocal() }
 
 dependencies {
-    minecraft([
-            group: "net.minecraftforge",
-            name: "forge",
-            version: "${project.minecraft_version}-${project.forge_version}"
-    ])
+    minecraft "net.minecraftforge:forge:${project.minecraft_version}-${project.forge_version}"
 }
 
-// Example for how to get properties into the manifest for reading by the runtime..
 jar {
     manifest {
         attributes([
-            "Specification-Title": project.mod_id,
-            "Specification-Vendor": project.mod_author,
-            "Specification-Version": project.version, // We are version 1 of ourselves
-            "Implementation-Title": project.name,
-            "Implementation-Version": project.version,
-            "Implementation-Vendor" : project.mod_author,
-            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Specification-Title": project.mod_name,
+                "Specification-Vendor": project.mod_author,
+                "Specification-Version": "1",
+                "Implementation-Title": project.name,
+                "Implementation-Version": "${version}",
+                "Implementation-Vendor" : project.mod_author,
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
 }
