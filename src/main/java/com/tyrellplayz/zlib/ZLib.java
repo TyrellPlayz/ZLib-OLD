@@ -6,7 +6,7 @@ import com.tyrellplayz.zlib.proxy.ClientProxy;
 import com.tyrellplayz.zlib.proxy.CommonProxy;
 import com.tyrellplayz.zlib.proxy.ServerProxy;
 import com.tyrellplayz.zlib.world.WorldGenerator;
-import com.tyrellplayz.zlib.world.ore.Ore;
+import com.tyrellplayz.zlib.world.ore.OreType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.IReloadableResourceManager;
 import net.minecraft.resources.IResourceManager;
@@ -34,7 +34,7 @@ public class ZLib extends ZMod {
 
         MinecraftForge.EVENT_BUS.register(new ServerEvents());
 
-        createRegistry(new ResourceLocation(ZLib.MOD_ID, "ore"), Ore.class);
+        createRegistry(new ResourceLocation(ZLib.MOD_ID, "ore"), OreType.class);
     }
 
     @Override
