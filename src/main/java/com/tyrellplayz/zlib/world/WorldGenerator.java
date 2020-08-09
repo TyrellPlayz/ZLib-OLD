@@ -1,6 +1,5 @@
 package com.tyrellplayz.zlib.world;
 
-import com.tyrellplayz.zlib.ZLib;
 import com.tyrellplayz.zlib.world.ore.OreType;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
@@ -20,13 +19,9 @@ public class WorldGenerator {
         // Get a collection of all the ores that have been registered.
         final Collection<OreType> ORES = RegistryManager.ACTIVE.getRegistry(OreType.class).getValues();
         // If there are no registered ores, just return.
-        if(ORES.isEmpty()) {
-            System.out.println("There are no registered ores.");
-            return;
-        }
+        if(ORES.isEmpty()) return;
 
         ForgeRegistries.BIOMES.forEach(biome -> ORES.forEach(ore -> {
-            ZLib.LOGGER.debug("Adding "+ore.getRegistryName()+" to biome "+biome.getRegistryName());
             if(ore.canSpawn(biome)) addOre(biome,ore.getType(),ore);
         }));
     }

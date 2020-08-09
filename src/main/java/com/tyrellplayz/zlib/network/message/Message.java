@@ -1,11 +1,9 @@
-package com.tyrellplayz.zlib.network.messages;
+package com.tyrellplayz.zlib.network.message;
 
-import net.minecraft.network.INetHandler;
-import net.minecraft.network.IPacket;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.fml.network.NetworkEvent;
 
-import java.io.IOException;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public abstract class Message<T extends Message<T>> {
@@ -29,7 +27,7 @@ public abstract class Message<T extends Message<T>> {
     /**
      * Handles the packet when received.
      */
-    public abstract void handlePacket(Supplier<NetworkEvent.Context> context);
+    public abstract BiConsumer<T,Supplier<NetworkEvent.Context>> handlePacket();
     
     public String getName() {
         return name;

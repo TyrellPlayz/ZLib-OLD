@@ -1,7 +1,7 @@
 package com.tyrellplayz.zlib.network;
 
-import com.tyrellplayz.zlib.network.messages.Message;
-import com.tyrellplayz.zlib.util.Util;
+import com.tyrellplayz.zlib.network.message.HandshakeMessage;
+import com.tyrellplayz.zlib.network.message.Message;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
@@ -9,14 +9,16 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.FakePlayer;
+import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.network.FMLHandshakeHandler;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fml.util.ThreeConsumer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -24,10 +26,10 @@ import java.util.function.Supplier;
 public class NetworkManager {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public final ResourceLocation name;
     public final String protocolVersion;
 
-    private final SimpleChannel CHANNEL;
+    private final SimpleChannel PLAY_CHANNEL;
+    private final SimpleChannel HANDSHAKE_CHANNEL;
 
     private int messageId;
 
@@ -36,30 +38,62 @@ public class NetworkManager {
     }
 
     public NetworkManager(String modId, String protocolVersion) {
-        this.name = new ResourceLocation(modId,"main_channel");
         this.protocolVersion = protocolVersion;
-        CHANNEL = NetworkRegistry.newSimpleChannel(name, () -> protocolVersion, s -> true, s -> true);
+        this.PLAY_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(modId,"play"), () -> protocolVersion, s -> true, s -> true);
+        this.HANDSHAKE_CHANNEL = NetworkRegistry.newSimpleChannel(new ResourceLocation(modId,"handshake"),() -> protocolVersion,s -> true,s -> true);
+
+        registerHandshakeMessage(99, HandshakeMessage.ClientToServerAcknowledge.class);
     }
 
-    public <T extends Message<T>> void registerMessage(Class<T> messageType) {
+    public <T extends Message<T>> void registerPlayMessage(Class<T> messageType, LogicalSide logicalSide) {
         try {
             T instance = messageType.newInstance();
-            registerMessage(messageType, Message::writePacket, instance::readPacket, Message::handlePacket);
+            registerPlayMessage(messageType, Message::writePacket, instance::readPacket, instance.handlePacket(),logicalSide);
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
-    public <T extends Message<T>> void registerMessage(Class<T> messageType, BiConsumer<T, PacketBuffer> encoder, Function<PacketBuffer, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> messageConsumer) {
-        CHANNEL.registerMessage(messageId++, messageType,encoder,decoder,messageConsumer);
+    public <T extends Message<T>> void registerPlayMessage(Class<T> messageType, BiConsumer<T, PacketBuffer> encoder, Function<PacketBuffer, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> handler, LogicalSide logicalSide) {
+        PLAY_CHANNEL.registerMessage(messageId++, messageType,encoder,decoder,(t, contextSupplier) -> {
+            if(contextSupplier.get().getDirection().getReceptionSide() != logicalSide)
+                throw new RuntimeException("Attempted to handle message "+messageType.getSimpleName()+" on the wrong side");
+            handler.accept(t,contextSupplier);
+        });
     }
 
-    public SimpleChannel getChannel() {
-        return CHANNEL;
+    public <T extends HandshakeMessage<T>> void registerHandshakeMessage(int index, Class<T> messageType) {
+        try {
+            T instance = messageType.newInstance();
+            registerHandshakeMessage(index,messageType, HandshakeMessage::writePacket, instance::readPacket, instance.handlePacket(),instance.isLoginPacket());
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
-    public ResourceLocation getChannelName() {
-        return name;
+    public <T extends HandshakeMessage<T>> void registerHandshakeMessage(int index, Class<T> messageType, BiConsumer<T, PacketBuffer> encoder, Function<PacketBuffer, T> decoder, BiConsumer<T, Supplier<NetworkEvent.Context>> handler, boolean isLoginPacket) {
+        if(isLoginPacket) {
+            HANDSHAKE_CHANNEL.messageBuilder(messageType,index)
+                    .loginIndex(HandshakeMessage::getLoginIndex,HandshakeMessage::setLoginIndex)
+                    .encoder(encoder)
+                    .decoder(decoder)
+                    .markAsLoginPacket()
+                    .consumer(handler).add();
+        }else {
+            HANDSHAKE_CHANNEL.messageBuilder(messageType,index)
+                    .loginIndex(HandshakeMessage::getLoginIndex,HandshakeMessage::setLoginIndex)
+                    .encoder(encoder)
+                    .decoder(decoder)
+                    .consumer(handler).add();
+        }
+    }
+
+    public SimpleChannel getPlayerChannel() {
+        return PLAY_CHANNEL;
+    }
+
+    public SimpleChannel getHandshakeChannel() {
+        return HANDSHAKE_CHANNEL;
     }
 
     /**
@@ -68,7 +102,7 @@ public class NetworkManager {
      */
     @OnlyIn(Dist.CLIENT)
     public <T extends Message<T>> void sendToServer(Message<T> message) {
-        CHANNEL.sendToServer(message);
+        PLAY_CHANNEL.sendToServer(message);
     }
 
     /**
@@ -78,7 +112,7 @@ public class NetworkManager {
      */
     public <T extends Message<T>> void sendTo(Message<T> message, ServerPlayerEntity player) {
         if(!(player instanceof FakePlayer)) {
-            if(isServerSide()) CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),message);
+            if(isServerSide()) PLAY_CHANNEL.send(PacketDistributor.PLAYER.with(() -> player),message);
         }
     }
 
@@ -89,7 +123,7 @@ public class NetworkManager {
      * @param <T>
      */
     public <T extends Message<T>> void sendToChunk(Message<T> message, Chunk chunk) {
-        if(isServerSide()) CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk),message);
+        if(isServerSide()) PLAY_CHANNEL.send(PacketDistributor.TRACKING_CHUNK.with(() -> chunk),message);
     }
 
     /**
@@ -97,7 +131,7 @@ public class NetworkManager {
      * @param message The message
      */
     public <T extends Message<T>> void sendToAll(Message<T> message) {
-        if(isServerSide()) CHANNEL.send(PacketDistributor.ALL.noArg(),message);
+        if(isServerSide()) PLAY_CHANNEL.send(PacketDistributor.ALL.noArg(),message);
     }
 
     public boolean isServerSide() {
