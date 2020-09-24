@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IDataProvider;
 import net.minecraft.resources.ResourcePackType;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,7 +33,11 @@ public abstract class AbstractDataProvider implements IDataProvider {
     }
 
     public Path getOutputPath() {
-        return OUTPUT_PATH.resolve(PROVIDER_TYPE.getPackType().getDirectoryName()+"/"+MOD_ID+"/"+PROVIDER_TYPE.getDirectoryName());
+        return getOutputPath(MOD_ID);
+    }
+
+    public Path getOutputPath(String modId) {
+        return OUTPUT_PATH.resolve(PROVIDER_TYPE.getPackType().getDirectoryName()+"/"+modId+"/"+PROVIDER_TYPE.getDirectoryName());
     }
 
     public Path getInputPath() {

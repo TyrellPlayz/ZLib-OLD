@@ -15,6 +15,7 @@ import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class ZMod {
@@ -48,14 +49,6 @@ public abstract class ZMod {
         dataProviders.add(dataProvider);
     }
 
-    public final void dataGeneratorSetup(final GatherDataEvent event) {
-        DataGenerator generator = event.getGenerator();
-        dataProviders.forEach(dataProvider -> {
-            IDataProvider provider = dataProvider.apply(generator);
-            event.getGenerator().addProvider(provider);
-        });
-    }
-
     public <T extends IForgeRegistryEntry<T>> void createRegistry(ResourceLocation key, Class<T> type) {
         registryBuilders.add(new RegistryBuilder<T>().setName(key).setType(type).setDefaultKey(key));
     }
@@ -63,6 +56,10 @@ public abstract class ZMod {
     public void registerRegistries(RegistryEvent.NewRegistry event) {
         System.out.println("Creating Registries");
         registryBuilders.forEach(RegistryBuilder::create);
+    }
+
+    public void dataGeneratorSetup(final GatherDataEvent event) {
+
     }
 
 }

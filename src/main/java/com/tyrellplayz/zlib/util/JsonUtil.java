@@ -46,20 +46,26 @@ public class JsonUtil {
         return gson.fromJson(jsonObject,type);
     }
 
-    public static String getStringOrDefault(JsonObject object, String id, String def) {
-        JsonElement jsonElement = object.get(id);
+    public static String getStringOrDefault(JsonObject object, String key, String def) {
+        JsonElement jsonElement = object.get(key);
         if(jsonElement == null) return def;
         return jsonElement.getAsString();
     }
 
-    public static int getIntOrDefault(JsonObject object, String id, int def) {
-        JsonElement jsonElement = object.get(id);
+    public static int getIntOrDefault(JsonObject object, String key, int def) {
+        JsonElement jsonElement = object.get(key);
         if(jsonElement == null) return def;
         return jsonElement.getAsInt();
     }
 
-    public static List<String> getListOrDefault(JsonObject object, String id, List<String> def) {
-        JsonElement jsonElement = object.get(id);
+    public static boolean getBoolOrDefault(JsonObject object, String key, boolean def) {
+        JsonElement jsonElement = object.get(key);
+        if(jsonElement == null) return def;
+        return jsonElement.getAsBoolean();
+    }
+
+    public static List<String> getListOrDefault(JsonObject object, String key, List<String> def) {
+        JsonElement jsonElement = object.get(key);
         if(jsonElement == null) return def;
         if(!jsonElement.isJsonArray()) return def;
         List<String> strings = new ArrayList<>();
@@ -67,8 +73,8 @@ public class JsonUtil {
         return strings;
     }
 
-    public static ResourceLocation getResourceLocationOrDefault(JsonObject object, String id, ResourceLocation resourceLocation) {
-        JsonElement jsonElement = object.get(id);
+    public static ResourceLocation getResourceLocationOrDefault(JsonObject object, String key, ResourceLocation resourceLocation) {
+        JsonElement jsonElement = object.get(key);
         if(jsonElement == null) return resourceLocation;
         return new ResourceLocation(jsonElement.getAsString());
     }

@@ -4,6 +4,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.world.gen.feature.template.RuleTest;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import java.util.function.Predicate;
@@ -14,53 +15,49 @@ import java.util.function.Predicate;
 public class OreType extends ForgeRegistryEntry<OreType> {
 
     private final BlockState blockState;
-    private final OreFeatureConfig.FillerBlockType type;
+    private final RuleTest ruleTest;
 
-    // Chance that the ore generates in a chunk.
+    // The average number of ore veins per chunk.
     private final int perChunk;
     // The max number of blocks in a vein of ore.
     private final int maxVeinSize;
-    // Bottom offset for calculating height that veins can spawn.
-    private final int bottomOffset;
-    // Top offset for calculating height that veins can spawn.
-    private final int topOffset;
-    // The base maximum height that veins of ore can spawn.
-    // Height is calculated by: random.nextInt(maxHeight - topOffset) + bottomOffset
+    // The minimum height that veins of ore can spawn at.
+    private final int minHeight;
+    // The maximum height that veins of ore can spawn at.
     private final int maxHeight;
 
-    private final Predicate<Biome> canSpawn;
+    private final Predicate<Biome> isValidBiome;
 
-    public static OreType createOverworldOre(BlockState blockState, int perChunk, int maxVeinSize, int bottomOffset, int topOffset, int maxHeight) {
-        return new OreType(blockState,perChunk,maxVeinSize,bottomOffset,topOffset,maxHeight,canSpawnOverworld());
+    public static OreType createOverworldOre(BlockState blockState, int perChunk, int maxVeinSize, int minHeight, int maxHeight) {
+        return new OreType(blockState,perChunk,maxVeinSize,minHeight,maxHeight,canSpawnOverworld());
     }
 
-    public static OreType createNetherOre(BlockState blockState, int perChunk, int maxVeinSize, int bottomOffset, int topOffset, int maxHeight) {
-        return new OreType(blockState,OreFeatureConfig.FillerBlockType.NETHER_ORE_REPLACEABLES,perChunk,maxVeinSize,bottomOffset,topOffset,maxHeight,canSpawnNether());
+    public static OreType createNetherOre(BlockState blockState, int perChunk, int maxVeinSize, int minHeight, int maxHeight) {
+        return new OreType(blockState,OreFeatureConfig.FillerBlockType.field_241883_b,perChunk,maxVeinSize,minHeight,maxHeight,canSpawnNether());
     }
 
-    public OreType(BlockState blockState, int perChunk, int maxVeinSize, int bottomOffset, int topOffset, int maxHeight, Predicate<Biome> canSpawn) {
-        this(blockState, OreFeatureConfig.FillerBlockType.NATURAL_STONE,perChunk,maxVeinSize,bottomOffset,topOffset,maxHeight,canSpawn);
+    public OreType(BlockState blockState, int perChunk, int maxVeinSize, int minHeight, int maxHeight, Predicate<Biome> canSpawn) {
+        this(blockState, OreFeatureConfig.FillerBlockType.field_241882_a,perChunk,maxVeinSize,minHeight,maxHeight,canSpawn);
     }
 
-    public OreType(BlockState blockState, OreFeatureConfig.FillerBlockType type, int perChunk, int maxVeinSize, int bottomOffset, int topOffset, int maxHeight, Predicate<Biome> canSpawn) {
+    public OreType(BlockState blockState, RuleTest ruleTest, int perChunk, int maxVeinSize, int minHeight, int maxHeight, Predicate<Biome> isValidBiome) {
         this.blockState = blockState;
-        this.type = type;
+        this.ruleTest = ruleTest;
         this.perChunk = MathHelper.clamp(perChunk,1,512);
         this.maxVeinSize = MathHelper.clamp(maxVeinSize,1,512);
 
         this.maxHeight = MathHelper.clamp(maxHeight,1,256);
-        this.topOffset = MathHelper.clamp(topOffset,0,this.maxHeight);
-        this.bottomOffset = MathHelper.clamp(bottomOffset,0,(256 - this.maxHeight+this.topOffset));
+        this.minHeight = MathHelper.clamp(minHeight,0,this.maxHeight);
 
-        this.canSpawn = canSpawn;
+        this.isValidBiome = isValidBiome;
     }
 
     public BlockState getBlockState() {
         return blockState;
     }
 
-    public OreFeatureConfig.FillerBlockType getType() {
-        return type;
+    public RuleTest getRuleTest() {
+        return ruleTest;
     }
 
     public int getPerChunk() {
@@ -71,20 +68,16 @@ public class OreType extends ForgeRegistryEntry<OreType> {
         return maxVeinSize;
     }
 
-    public int getBottomOffset() {
-        return bottomOffset;
-    }
-
-    public int getTopOffset() {
-        return topOffset;
+    public int getMinHeight() {
+        return minHeight;
     }
 
     public int getMaxHeight() {
         return maxHeight;
     }
 
-    public boolean canSpawn(Biome biome) {
-        return canSpawn.test(biome);
+    public boolean isValidBiome(Biome biome) {
+        return isValidBiome.test(biome);
     }
 
     public static Predicate<Biome> canSpawnOverworld() {
@@ -94,5 +87,9 @@ public class OreType extends ForgeRegistryEntry<OreType> {
     public static Predicate<Biome> canSpawnNether() {
         return biome -> biome.getCategory() == Biome.Category.NETHER;
     }
+
+    public static Predicate<Biome> canSpawnTheEnd() {
+        return biome -> biome.getCategory() == Biome.Category.THEEND;
+    };
 
 }

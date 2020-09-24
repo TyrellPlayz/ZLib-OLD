@@ -3,6 +3,7 @@ package com.tyrellplayz.zlib.util;
 import com.tyrellplayz.zlib.ZLib;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.forgespi.language.ModFileScanData;
+import org.apache.logging.log4j.core.util.Booleans;
 import org.objectweb.asm.Type;
 
 import java.util.ArrayList;
@@ -11,6 +12,15 @@ import java.util.List;
 public class Util {
 
     private Util() {}
+
+    public static boolean isInt(String s) {
+        try {
+            Integer.parseInt(s);
+        }catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
 
     public static <T> List<T> getInstances(Class<?> annotationClass, Class<T> instanceClass) {
         Type annotationType = Type.getType(annotationClass);
