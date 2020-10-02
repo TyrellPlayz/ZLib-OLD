@@ -51,7 +51,7 @@ public class DropInventoryLootEntry extends StandaloneLootEntry {
     }
 
     @Override
-    public LootPoolEntryType func_230420_a_() {
+    public LootPoolEntryType getType() {
         return ZLootFunctions.DROP_INVENTORY;
     }
 

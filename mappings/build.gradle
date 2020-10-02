@@ -3,7 +3,7 @@ apply plugin: 'maven'
 
 ext.channel = 'snapshot'
 ext.dlVersion = getDate()
-ext.mcVersion = '1.16.2'
+ext.mcVersion = '1.16.3'
 
 group = 'de.oceanlabs.mcp'
 version = dlVersion + '-' + mcVersion
@@ -45,6 +45,7 @@ def merge(newFilePath,mcpMappings,customMappings) {
     scanner.close()
     List<String> srgUsed = new ArrayList<>();
 
+
     // Write the mcp mappings first.
     File mcpMappingsFile = new File("$projectDir/"+mcpMappings)
     BufferedReader mcpMappingsReader = new BufferedReader(new FileReader(mcpMappingsFile))
@@ -64,13 +65,19 @@ def merge(newFilePath,mcpMappings,customMappings) {
     File customMappingsFile = new File("$projectDir/"+customMappings)
     BufferedReader customMappingsReader = new BufferedReader(new FileReader(customMappingsFile))
 
+    List<String> usedLines = new ArrayList<>();
     String line2 = null;
     String[] firstLine2 = null;
     if((line2 = customMappingsReader.readLine()) != null) firstLine2 = line2.split(",")
     if (!Arrays.equals(headers, firstLine2)) throw new IOException("Header mis-match between CSV files")
     while ((line2 = customMappingsReader.readLine()) != null) {
         String firstColumn = line2.split(",")[0]
-        if(srgUsed.contains(firstColumn) || firstColumn.contains('#')) continue;
+        if(srgUsed.contains(firstColumn)){
+            usedLines.add(line2)
+            println(firstColumn+" is already being used by MCP. So skipping.")
+            continue
+        }
+        if(firstColumn.contains('#')) continue
         writer.write(line2)
         writer.newLine()
     }
@@ -88,7 +95,7 @@ def printArray(String[] array) {
 }
 
 /**
- * Downloads the MCP Mappings. Disabled until 1.16.1 are available.
+ * Downloads the MCP Mappings. Disabled until 1.16.3 are available.
  */
 task downloadCSVs {
     // Temporarily disabled

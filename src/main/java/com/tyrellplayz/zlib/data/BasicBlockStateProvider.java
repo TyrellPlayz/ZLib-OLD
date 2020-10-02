@@ -43,11 +43,11 @@ public class BasicBlockStateProvider extends AbstractDataProvider {
             if(block instanceof ICustomBlockState) blockStateJson = ((ICustomBlockState)block).getBlockStateObject(block.getRegistryName());
             else {
                 // Check if the block can have a state created for it.
-                if(!block.getDefaultState().getProperties().isEmpty() && !block.getDefaultState().has(BlockStateProperties.WATERLOGGED) && !block.getDefaultState().has(BlockStateProperties.HORIZONTAL_FACING)) {
+                if(!block.getDefaultState().getProperties().isEmpty() && !block.getDefaultState().hasProperty(BlockStateProperties.WATERLOGGED) && !block.getDefaultState().hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
                     LOGGER.warn("Cannot create blockstate file for "+block.getRegistryName());
                     continue;
                 }
-                blockStateJson = block.getDefaultState().has(BlockStateProperties.HORIZONTAL_FACING) ? createHorizontalFacingState(block) : createDefaultState(block);
+                blockStateJson = block.getDefaultState().hasProperty(BlockStateProperties.HORIZONTAL_FACING) ? createHorizontalFacingState(block) : createDefaultState(block);
             }
             // Save the state file.
             IDataProvider.save(GSON,cache,blockStateJson,new File(getOutputPath().toFile(),fileName).toPath());

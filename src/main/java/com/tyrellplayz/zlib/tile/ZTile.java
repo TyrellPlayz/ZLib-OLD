@@ -54,7 +54,7 @@ public class ZTile extends TileEntity implements INameable {
     @Override
     public void read(BlockState blockState, CompoundNBT compound) {
         super.read(blockState, compound);
-        if (compound.contains("CustomName", 8)) this.customName = ITextComponent.Serializer.func_240643_a_(compound.getString("CustomName"));
+        if (compound.contains("CustomName", 8)) this.customName = ITextComponent.Serializer.getComponentFromJson(compound.getString("CustomName"));
     }
 
     @Override

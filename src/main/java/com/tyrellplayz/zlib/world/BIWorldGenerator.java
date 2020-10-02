@@ -5,40 +5,37 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
 import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.Features;
 import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.template.RuleTest;
-import net.minecraft.world.gen.placement.ConfiguredPlacement;
 import net.minecraft.world.gen.placement.Placement;
 import net.minecraft.world.gen.placement.TopSolidRangeConfig;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
+import net.minecraftforge.event.world.BiomeLoadingEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.RegistryManager;
 
 import java.util.Collection;
 
-public class WorldGenerator {
+public class BIWorldGenerator {
 
-    public static void initFeatures() {
-
-        // Get a collection of all the ores that have been registered.
-        final Collection<OreType> ORES = RegistryManager.ACTIVE.getRegistry(OreType.class).getValues();
-        // If there are no registered ores, just return.
-        if(ORES.isEmpty()) return;
-
-        ForgeRegistries.BIOMES.forEach(biome -> ORES.forEach(ore -> {
-            if(ore.isValidBiome(biome)) addOre(biome,ore);
-        }));
-
+    @SubscribeEvent
+    public void onBiomeLoad(BiomeLoadingEvent event) {
+        BiomeGenerationSettingsBuilder settings = event.getGeneration();
+        getRegisteredOres().forEach(oreType -> {
+            settings.withFeature(GenerationStage.Decoration.UNDERGROUND_ORES,createOreFeature(oreType));
+        });
     }
 
-    private static void addOre(Biome biome, OreType oreType) {
+    private static ConfiguredFeature<?,?> createOreFeature(OreType oreType) {
         OreFeatureConfig config = new OreFeatureConfig(oreType.getRuleTest(),oreType.getBlockState(),oreType.getMaxVeinSize());
-        ConfiguredFeature<?,?> feature = Feature.ORE
+        return Feature.ORE
                 .withConfiguration(config)
                 .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(oreType.getMinHeight(),oreType.getMinHeight(), oreType.getMaxHeight())))
                 .spreadHorizontally()
                 .repeat(oreType.getPerChunk());
-        new BiomeModifier(biome).addFeature(GenerationStage.Decoration.UNDERGROUND_ORES,feature);
+    }
+
+    public Collection<OreType> getRegisteredOres() {
+        return RegistryManager.ACTIVE.getRegistry(OreType.class).getValues();
     }
 
 }

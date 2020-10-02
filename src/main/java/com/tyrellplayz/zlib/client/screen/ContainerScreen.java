@@ -36,10 +36,16 @@ public class ContainerScreen<T extends Container> extends net.minecraft.client.g
     }
 
     @Override
+    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(matrixStack);
+        super.render(matrixStack, mouseX, mouseY, partialTicks);
+    }
+
+    @Override
     protected final void drawGuiContainerForegroundLayer(MatrixStack matrixStack, int mouseX, int mouseY) {
         String text = title.getString();
-        this.fontRenderer.drawString(matrixStack,text, (float)(this.xSize / 2 - this.fontRenderer.getStringWidth(text) / 2), 6.0F, 4210752);
-        this.fontRenderer.drawString(matrixStack,this.playerInventory.getDisplayName().getString(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
+        this.font.drawString(matrixStack,text, (float)(this.xSize / 2 - this.font.getStringWidth(text) / 2), 6.0F, 4210752);
+        this.font.drawString(matrixStack,this.playerInventory.getDisplayName().getString(), 8.0F, (float)(this.ySize - 96 + 2), 4210752);
     }
 
     @Override
