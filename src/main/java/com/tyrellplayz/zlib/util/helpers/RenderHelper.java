@@ -137,8 +137,8 @@ public class RenderHelper {
 
         while (flag) {
             if(fontRenderer.getStringWidth(textTemp) > width) {
-                clippedList.add(fontRenderer.trimStringToWidth(textTemp,width,false));
-                textTemp = fontRenderer.trimStringToWidth(textTemp,fontRenderer.getStringWidth(textTemp)-width,true);
+                clippedList.add(fontRenderer.trimStringToWidth(textTemp,width));
+                textTemp = fontRenderer.trimStringToWidth(textTemp,fontRenderer.getStringWidth(textTemp)-width);
             }else {
                 clippedList.add(textTemp);
                 flag = false;

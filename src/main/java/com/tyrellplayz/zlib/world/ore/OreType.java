@@ -33,11 +33,11 @@ public class OreType extends ForgeRegistryEntry<OreType> {
     }
 
     public static OreType createNetherOre(BlockState blockState, int perChunk, int maxVeinSize, int minHeight, int maxHeight) {
-        return new OreType(blockState,OreFeatureConfig.FillerBlockType.field_241883_b,perChunk,maxVeinSize,minHeight,maxHeight,canSpawnNether());
+        return new OreType(blockState,OreFeatureConfig.FillerBlockType.NETHERRACK,perChunk,maxVeinSize,minHeight,maxHeight,canSpawnNether());
     }
 
     public OreType(BlockState blockState, int perChunk, int maxVeinSize, int minHeight, int maxHeight, Predicate<Biome> canSpawn) {
-        this(blockState, OreFeatureConfig.FillerBlockType.field_241882_a,perChunk,maxVeinSize,minHeight,maxHeight,canSpawn);
+        this(blockState, OreFeatureConfig.FillerBlockType.BASE_STONE_OVERWORLD,perChunk,maxVeinSize,minHeight,maxHeight,canSpawn);
     }
 
     public OreType(BlockState blockState, RuleTest ruleTest, int perChunk, int maxVeinSize, int minHeight, int maxHeight, Predicate<Biome> isValidBiome) {

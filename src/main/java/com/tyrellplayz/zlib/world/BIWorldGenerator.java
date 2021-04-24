@@ -1,6 +1,7 @@
 package com.tyrellplayz.zlib.world;
 
 import com.tyrellplayz.zlib.world.ore.OreType;
+import net.minecraft.block.OreBlock;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.GenerationStage;
 import net.minecraft.world.gen.feature.ConfiguredFeature;
@@ -27,11 +28,12 @@ public class BIWorldGenerator {
 
     private static ConfiguredFeature<?,?> createOreFeature(OreType oreType) {
         OreFeatureConfig config = new OreFeatureConfig(oreType.getRuleTest(),oreType.getBlockState(),oreType.getMaxVeinSize());
+
         return Feature.ORE
                 .withConfiguration(config)
                 .withPlacement(Placement.RANGE.configure(new TopSolidRangeConfig(oreType.getMinHeight(),oreType.getMinHeight(), oreType.getMaxHeight())))
-                .spreadHorizontally()
-                .repeat(oreType.getPerChunk());
+                .square()
+                .count(oreType.getPerChunk());
     }
 
     public Collection<OreType> getRegisteredOres() {

@@ -1,28 +1,28 @@
 modLoader="javafml"
-loaderVersion="[34,)"
+loaderVersion="[36,)"
 issueTrackerURL="https://github.com/TyrellPlayz/ZLib/issues"
 license="GNU GPLv3"
 
 [[mods]]
 modId="zlib"
-version="0.1.0"
+version="0.1.0-alpha"
 displayName="ZLib"
 updateJSONURL="https://raw.githubusercontent.com/TyrellPlayz/ZLib/1.16-dev/update.json"
 displayURL="https://github.com/TyrellPlayz/ZLib"
-logoFile="examplemod.png"
+logoFile="zlib.png"
 credits=""
 authors="TyrellPlayz"
 description="The mod libray used by all mods created by TyrellPlayz"
 
-[[dependencies.zLib]]
-    modId="forge"
-    mandatory=true
-    versionRange="[34,)"
-    ordering="NONE"
-    side="BOTH"
-[[dependencies.zLib]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.16.3]"
-    ordering="NONE"
-    side="BOTH"
+[[dependencies.zlib]]
+modId="forge"
+mandatory=true
+versionRange="[36,)"
+ordering="NONE"
+side="BOTH"
+[[dependencies.zlib]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.16.5,1.17)"
+ordering="NONE"
+side="BOTH"

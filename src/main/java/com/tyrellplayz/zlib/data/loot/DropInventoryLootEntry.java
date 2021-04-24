@@ -24,6 +24,11 @@ public class DropInventoryLootEntry extends StandaloneLootEntry {
     }
 
     @Override
+    public LootPoolEntryType func_230420_a_() {
+        return ZLootFunctions.DROP_INVENTORY;
+    }
+
+    @Override
     protected void func_216154_a(Consumer<ItemStack> output, LootContext context) {
         if(context.has(LootParameters.BLOCK_ENTITY)) {
             TileEntity tile = context.get(LootParameters.BLOCK_ENTITY);
@@ -48,11 +53,6 @@ public class DropInventoryLootEntry extends StandaloneLootEntry {
                 });
             }
         }
-    }
-
-    @Override
-    public LootPoolEntryType getType() {
-        return ZLootFunctions.DROP_INVENTORY;
     }
 
     public static StandaloneLootEntry.Builder<?> builder() {
